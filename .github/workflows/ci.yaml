@@ -17,6 +17,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Get Git commit SHA
+      id: git_sha
+      run: echo "GIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+    - name: Get branch name
+      id: branch_name
+      run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//-/g')" >> $GITHUB_ENV
+
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
@@ -35,3 +43,9 @@ jobs:
 
     - name: Run Tests
       run: ./mvnw test
+
+    - name: Build and Publish to Docker repo
+      run: | 
+        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        docker build -t anil93980/demo-app:${{ env.BRANCH_NAME }}-${{ env.GIT_SHA }} . 
+        docker push anil93980/demo-app:${{ env.BRANCH_NAME }}-${{ env.GIT_SHA }}
