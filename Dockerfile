@@ -1,4 +1,4 @@
-FROM gcr.io/distroless/java:17
+FROM openjdk:17-jre-slim
 
 WORKDIR /app
 
