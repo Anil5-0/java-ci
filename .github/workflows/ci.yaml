@@ -25,7 +25,10 @@ jobs:
         cache: maven
   
     - name: Changing permissions for mvnw
-      run: chmod +x ./mvnw
+      run: chmod +x mvnw
+
+    - name: Verify Maven Wrapper presence
+      run: ls -al .mvn/wrapper/maven-wrapper.jar
    
     - name: Build with Maven
       run: ./mvnw clean verify 
