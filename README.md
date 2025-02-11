@@ -13,7 +13,7 @@ The pipeline performs the following steps:
 
 ## Workflow Details
 
-- **Trigger**: The pipeline is triggered on every push to the `main` branch or when a pull request is opened against `main`.
+- **Trigger**: The pipeline is triggered on every push to the `main` branch.
 - **Tools Used**:
   - **GitHub Actions**: For orchestrating the CI pipeline.
   - **Maven**: For building and packaging the Java application.
