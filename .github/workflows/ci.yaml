@@ -10,7 +10,9 @@ on:
       - 'pom.xml'
       - 'src/**'
       - 'Dockerfile'
-      
+    
+  workflow_dispatch:  
+
 jobs:
   build:
 
