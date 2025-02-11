@@ -35,8 +35,20 @@ jobs:
     - name: Build and Test with Maven
       run: ./mvnw clean verify 
 
-    - name: Build and Publish to Docker repo
-      run: | 
-        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-        docker build -t anil93980/demo-app:${{ env.BRANCH_NAME }}-${{ env.GIT_SHA }} . 
+    - name: Build Docker Image
+      run: docker build -t anil93980/demo-app:${{ env.BRANCH_NAME }}-${{ env.GIT_SHA }} . 
+        
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@0.28.0
+      with:
+        image-ref: 'anil93980/demo-app:${{ env.BRANCH_NAME }}-${{ env.GIT_SHA }}'
+        format: 'table'
+        exit-code: '1'
+        ignore-unfixed: true
+        vuln-type: 'os,library'
+        severity: 'CRITICAL,HIGH'
+
+    - name: Push image to Docker Hub
+      run: |
+        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin 
         docker push anil93980/demo-app:${{ env.BRANCH_NAME }}-${{ env.GIT_SHA }}
